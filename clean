@@ -1,0 +1,7 @@
+rm */*.c~
+rm */*.h~
+rm */press.*
+rm */mov*.sph
+rm */snapshot_end.sph
+rm */md
+rm Cell/mdCell Multi/mdMulti Single/mdSingle Grow/mdgrow

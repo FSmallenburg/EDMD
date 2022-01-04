@@ -1,0 +1,17 @@
+{
+    "files.associations": {
+        "ctime": "c",
+        "*.tcc": "c",
+        "chrono": "c",
+        "iomanip": "c",
+        "limits": "c",
+        "numeric": "c",
+        "ratio": "c",
+        "streambuf": "c",
+        "cmath": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c",
+        "algorithm": "c"
+    }
+}
