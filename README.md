@@ -1,63 +1,48 @@
 # Event-driven molecular dynamics code for hard spheres
 
-
 This is an event-driven molecular dynamics (EDMD) code for hard spheres. It uses neighbor lists [1] and an efficient event calendar [2] for efficiency.
 
 See LINK for a complete description and benchmarking.
 
-
 ## Code variants
 
-Four simulation codes are included, in their respective subfolders. Three of these are variations of a microcanonical simulation code, simulating a constant number $N$ particles in a cubic volume $V$ with periodic boundary conditions at constant energy. 
-- **Cell** contains a simulation code where collision checks are based on a cell list.
-- **Multi** contains a simualtion code where collision checks are based on a neighbor list, and is more typically more efficient than the **Cell** code at sufficiently high densities.
-- **Single** contains a simualtion code where collision checks are based on a neighbor list, and only a single event is scheduled per particle. This is typically more efficient than the **Multi** code.
-
+Four simulation codes are included, in their respective subfolders. Three of these are variations of a microcanonical simulation code, simulating a constant number <img alt="N" src="https://render.githubusercontent.com/render/math?math=N" style="transform: translateY(20%);" /> particles in a cubic volume <img alt="V" src="https://render.githubusercontent.com/render/math?math=V" style="transform: translateY(20%);" /> with periodic boundary conditions at constant energy.
+* **Cell** contains a simulation code where collision checks are based on a cell list.
+* **Multi** contains a simualtion code where collision checks are based on a neighbor list, and is more typically more efficient than the **Cell** code at sufficiently high densities.
+* **Single** contains a simualtion code where collision checks are based on a neighbor list, and only a single event is scheduled per particle. This is typically more efficient than the **Multi** code.
 Additionally, a separate simulation code **Grow** is included in which the particles grow over time until a desired packing fraction is reached. This can be helpful for creating initial configurations.
-
-
 
 ## Compilation details
 
 Each code consists of a single code file plus a header file. A makefile is included for each code, as well as sample initial configurations. All simulation parameters are defined as global variables near the top of the main code file.
 
-
 ## Simulation units and output
 
-We simulate systems of $N$ hard spheres in a constant volume $V$ in three dimensions. Each particle $i$ has a position $\mathbf{r}_i$, a diameter $\sigma_i$, a mass $m_i$, and a radius $R_i$. 
+We simulate systems of <img alt="N" src="https://render.githubusercontent.com/render/math?math=N" style="transform: translateY(20%);" /> hard spheres in a constant volume <img alt="V" src="https://render.githubusercontent.com/render/math?math=V" style="transform: translateY(20%);" /> in three dimensions. Each particle <img alt="i" src="https://render.githubusercontent.com/render/math?math=i" style="transform: translateY(20%);" /> has a position <img alt="\mathbf{r}_i" src="https://render.githubusercontent.com/render/math?math=%5Cmathbf%7Br%7D_i" style="transform: translateY(20%);" />, a diameter <img alt="\sigma_i" src="https://render.githubusercontent.com/render/math?math=%5Csigma_i" style="transform: translateY(20%);" />, a mass <img alt="m_i" src="https://render.githubusercontent.com/render/math?math=m_i" style="transform: translateY(20%);" />, and a radius <img alt="R_i" src="https://render.githubusercontent.com/render/math?math=R_i" style="transform: translateY(20%);" />.
 The simulation code operates in the following units:
--  Lengths are measured in units of the maximum particle size $\sigma$.
--  Mass is measured in units of a reference mass $m$, which is typically chosen to be the mass of a particle with diameter $\sigma$.
--  Time is measured in units of $\tau = \sqrt{\beta m \sigma^2}$. Here, $\beta = 1/k_B T$ with $k_B$ Boltzmann's constant.
+* Lengths are measured in units of the maximum particle size <img alt="\sigma" src="https://render.githubusercontent.com/render/math?math=%5Csigma" style="transform: translateY(20%);" />.
+* Mass is measured in units of a reference mass <img alt="m" src="https://render.githubusercontent.com/render/math?math=m" style="transform: translateY(20%);" />, which is typically chosen to be the mass of a particle with diameter <img alt="\sigma" src="https://render.githubusercontent.com/render/math?math=%5Csigma" style="transform: translateY(20%);" />.
+* Time is measured in units of <img alt="\tau = \sqrt{\beta m \sigma^2}" src="https://render.githubusercontent.com/render/math?math=%5Ctau%20%3D%20%5Csqrt%7B%5Cbeta%20m%20%5Csigma%5E2%7D" style="transform: translateY(20%);" />. Here, <img alt="\beta = 1/k_B T" src="https://render.githubusercontent.com/render/math?math=%5Cbeta%20%3D%201%2Fk_B%20T" style="transform: translateY(20%);" /> with <img alt="k_B" src="https://render.githubusercontent.com/render/math?math=k_B" style="transform: translateY(20%);" /> Boltzmann's constant.
+Note that the simulation assumes that no particles with a diameter greater than <img alt="1 \sigma" src="https://render.githubusercontent.com/render/math?math=1%20%5Csigma" style="transform: translateY(20%);" /> exist in the simulation, and uses assumption in the creation of the cell list. Hence, all particles necessarily have a diameter <img alt="\sigma_i \leq \sigma" src="https://render.githubusercontent.com/render/math?math=%5Csigma_i%20%5Cleq%20%5Csigma" style="transform: translateY(20%);" />. By default, the simulation code sets the mass of all particles to be equal to <img alt="m" src="https://render.githubusercontent.com/render/math?math=m" style="transform: translateY(20%);" /> when loading an initial configuration, but mass is taken into account when determining the effect of collisions. Hence, other choices for the mass can readily be implemented by adapting the initialization functions.
 
-Note that the simulation assumes that no particles with a diameter greater than $1 \sigma$ exist in the simulation, and uses assumption in the creation of the cell list. Hence, all particles necessarily have a diameter $\sigma_i \leq \sigma$. By default, the simulation code sets the mass of all particles to be equal to $m$ when loading an initial configuration, but mass is taken into account when determining the effect of collisions. Hence, other choices for the mass can readily be implemented by adapting the initialization functions.
-
-The simulation code measures the pressure $P$ during the simulation, and outputs it in the form of a reduced pressure $P^* = \beta P \sigma^3$. The average pressure in a given time interval $[t_a, t_b]$ is measured via the virial expression
-\begin{equation}
-P = \rho k_B T + \frac{1}{3V} \frac{\sum  \mathbf{\delta p}_i \cdot \mathbf{r}_{ij}}{t_b - t_a},
-\end{equation}
-where  $\rho = N/V$ is the number density with $V$ the system volume and $N$ the number of particles, and the sum in the last term is taken over all collisions in the time interval $[t_a, t_b]$. For each collision, $\mathbf{r}_{ij}$ is the center-to-center vector connecting the two colliding particles $i$ and $j$, and $\mathbf{\delta p}_i$ is the momentum change of particle $i$ due to the collision. 
-
+The simulation code measures the pressure <img alt="P" src="https://render.githubusercontent.com/render/math?math=P" style="transform: translateY(20%);" /> during the simulation, and outputs it in the form of a reduced pressure <img alt="P^* = \beta P \sigma^3" src="https://render.githubusercontent.com/render/math?math=P%5E%2a%20%3D%20%5Cbeta%20P%20%5Csigma%5E3" style="transform: translateY(20%);" />. The average pressure in a given time interval <img alt="[t_a, t_b]" src="https://render.githubusercontent.com/render/math?math=%5Bt_a%2C%20t_b%5D" style="transform: translateY(20%);" /> is measured via the virial expression
+<img alt="P = \rho k_B T + \frac{1}{3V} \frac{\sum  \mathbf{\delta p}_i \cdot \mathbf{r}_{ij}}{t_b - t_a}," src="https://render.githubusercontent.com/render/math?math=P%20%3D%20%5Crho%20k_B%20T%20%2B%20%5Cfrac%7B1%7D%7B3V%7D%20%5Cfrac%7B%5Csum%20%20%5Cmathbf%7B%5Cdelta%20p%7D_i%20%5Ccdot%20%5Cmathbf%7Br%7D_%7Bij%7D%7D%7Bt_b%20-%20t_a%7D%2C" style="transform: translateY(20%);" />
+where  <img alt="\rho = N/V" src="https://render.githubusercontent.com/render/math?math=%5Crho%20%3D%20N%2FV" style="transform: translateY(20%);" /> is the number density with <img alt="V" src="https://render.githubusercontent.com/render/math?math=V" style="transform: translateY(20%);" /> the system volume and <img alt="N" src="https://render.githubusercontent.com/render/math?math=N" style="transform: translateY(20%);" /> the number of particles, and the sum in the last term is taken over all collisions in the time interval <img alt="[t_a, t_b]" src="https://render.githubusercontent.com/render/math?math=%5Bt_a%2C%20t_b%5D" style="transform: translateY(20%);" />. For each collision, <img alt="\mathbf{r}_{ij}" src="https://render.githubusercontent.com/render/math?math=%5Cmathbf%7Br%7D_%7Bij%7D" style="transform: translateY(20%);" /> is the center-to-center vector connecting the two colliding particles <img alt="i" src="https://render.githubusercontent.com/render/math?math=i" style="transform: translateY(20%);" /> and <img alt="j" src="https://render.githubusercontent.com/render/math?math=j" style="transform: translateY(20%);" />, and <img alt="\mathbf{\delta p}_i" src="https://render.githubusercontent.com/render/math?math=%5Cmathbf%7B%5Cdelta%20p%7D_i" style="transform: translateY(20%);" /> is the momentum change of particle <img alt="i" src="https://render.githubusercontent.com/render/math?math=i" style="transform: translateY(20%);" /> due to the collision.
 
 Additionally, as a check on conservation of energy, the simulation measures the temperature of the system, using the equipartition theorem
 \begin{equation}
-    \sum_i \frac{1}{2}m v_i^2 = \frac{3N}{2} k_B T.
+\sum_i \frac{1}{2}m v_i^2 = \frac{3N}{2} k_B T.
 \end{equation}
-The temperature is reported in units of $m \sigma^2 / \tau^2 / k_B$, and should be constant during the simulation (up to numerical accuracy). A thermostat function is included in the simulation codes, but is disabled by default. Since the total kinetic energy is a conserved quantity, the temperature remains constant even without a thermostat. Hence, all simulations reported in the main text are performed in the microcanonical ensemble (i.e. at constant total energy).
+The temperature is reported in units of <img alt="m \sigma^2 / \tau^2 / k_B" src="https://render.githubusercontent.com/render/math?math=m%20%5Csigma%5E2%20%2F%20%5Ctau%5E2%20%2F%20k_B" style="transform: translateY(20%);" />, and should be constant during the simulation (up to numerical accuracy). A thermostat function is included in the simulation codes, but is disabled by default. Since the total kinetic energy is a conserved quantity, the temperature remains constant even without a thermostat. Hence, all simulations reported in the main text are performed in the microcanonical ensemble (i.e. at constant total energy).
 
-
-
-    
 ## Snapshot file format
 
-The configuration files from the simulation are written in a simple text-based format, which can contain multiple snapshots per file. For each frame, the format consists of $N+2$ lines (with $N$ the number of particles), as follows:
-- One line containing just the number of particles
-- One line containing the box size, specifying the box length $L_x$, $L_y$, and $L_z$ along the three axes, separated by whitespace.
-- One line per particle containing: a letter indicating particle type, three numbers indicating the real-space particle coordinates, and one number indicating the particle radius. 
+The configuration files from the simulation are written in a simple text-based format, which can contain multiple snapshots per file. For each frame, the format consists of <img alt="N+2" src="https://render.githubusercontent.com/render/math?math=N%2B2" style="transform: translateY(20%);" /> lines (with <img alt="N" src="https://render.githubusercontent.com/render/math?math=N" style="transform: translateY(20%);" /> the number of particles), as follows:
+* One line containing just the number of particles
+* One line containing the box size, specifying the box length <img alt="L_x" src="https://render.githubusercontent.com/render/math?math=L_x" style="transform: translateY(20%);" />, <img alt="L_y" src="https://render.githubusercontent.com/render/math?math=L_y" style="transform: translateY(20%);" />, and <img alt="L_z" src="https://render.githubusercontent.com/render/math?math=L_z" style="transform: translateY(20%);" /> along the three axes, separated by whitespace.
+* One line per particle containing: a letter indicating particle type, three numbers indicating the real-space particle coordinates, and one number indicating the particle radius.
+The movie files that are created by the simulation code include multiple of these frames consecutively in a single text file. Note that although the code assumes periodic boundary conditions, coordinates of particles that leave the box during the simulation will be printed as being outside of the simulation box, to allow for analysis of long-time dynamics. Hence, any structural analysis or visualization should apply periodic boundary conditions explicitly.
 
-The movie files that are created by the simulation code include multiple of these frames consecutively in a single text file. Note that although the code assumes periodic boundary conditions, coordinates of particles that leave the box during the simulation will be printed as being outside of the simulation box, to allow for analysis of long-time dynamics. Hence, any structural analysis or visualization should apply periodic boundary conditions explicitly. 
-
-The simulation codes can read in snapshots in this format as initial configurations. Periodic boundaries will be applied to the snapshot at the start of the simulation.  Note that the simulation code assumes that all box lengths, positions, and radii are given in units of $\sigma$, which is the largest possible particle diameter. Hence, the radius of a particle in the initial configuration should never be given as a number larger than 0.5.
+The simulation codes can read in snapshots in this format as initial configurations. Periodic boundaries will be applied to the snapshot at the start of the simulation.  Note that the simulation code assumes that all box lengths, positions, and radii are given in units of <img alt="\sigma" src="https://render.githubusercontent.com/render/math?math=%5Csigma" style="transform: translateY(20%);" />, which is the largest possible particle diameter. Hence, the radius of a particle in the initial configuration should never be given as a number larger than 0.5.
 
 Adaptation to different configuration file formats can be done via modification of the ``loadparticles``, ``write``, and ``outputsnapshot`` functions.
-
