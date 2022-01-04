@@ -32,15 +32,13 @@ The simulation code operates in the following units:
 
 Note that the simulation assumes that no particles with a diameter greater than $1 \sigma$ exist in the simulation, and uses assumption in the creation of the cell list. Hence, all particles necessarily have a diameter $\sigma_i \leq \sigma$. By default, the simulation code sets the mass of all particles to be equal to $m$ when loading an initial configuration, but mass is taken into account when determining the effect of collisions. Hence, other choices for the mass can readily be implemented by adapting the initialization functions.
 
-The simulation code measures the pressure $P$ during the simulation, and outputs it in the form of a reduced pressure $P^* = \beta P \sigma^3$. The average pressure in a given time interval $[t_a, t_b]$ is measured via the virial expression
-$P = \rho k_B T + \frac{1}{3V} \frac{\sum  \mathbf{\delta p}_i \cdot \mathbf{r}_{ij}}{t_b - t_a},$
+The simulation code measures the pressure $P$ during the simulation, and outputs it in the form of a reduced pressure $P^* = \beta P \sigma^3$. The average pressure in a given time interval $[t_a, t_b]$ is measured via the virial expression 
+$P = \rho k_B T + \frac{1}{3V} \frac{\sum  \mathbf{\delta p}_i \cdot \mathbf{r}_{ij}}{t_b - t_a},$ 
 where  $\rho = N/V$ is the number density with $V$ the system volume and $N$ the number of particles, and the sum in the last term is taken over all collisions in the time interval $[t_a, t_b]$. For each collision, $\mathbf{r}_{ij}$ is the center-to-center vector connecting the two colliding particles $i$ and $j$, and $\mathbf{\delta p}_i$ is the momentum change of particle $i$ due to the collision. 
 
 
-Additionally, as a check on conservation of energy, the simulation measures the temperature of the system, using the equipartition theorem
-\begin{equation}
-    \sum_i \frac{1}{2}m v_i^2 = \frac{3N}{2} k_B T.
-\end{equation}
+Additionally, as a check on conservation of energy, the simulation measures the temperature of the system, using the equipartition theorem 
+$\sum_i \frac{1}{2}m v_i^2 = \frac{3N}{2} k_B T.$ 
 The temperature is reported in units of $m \sigma^2 / \tau^2 / k_B$, and should be constant during the simulation (up to numerical accuracy). A thermostat function is included in the simulation codes, but is disabled by default. Since the total kinetic energy is a conserved quantity, the temperature remains constant even without a thermostat. Hence, all simulations reported in the main text are performed in the microcanonical ensemble (i.e. at constant total energy).
 
 
