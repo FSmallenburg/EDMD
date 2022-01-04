@@ -1,3 +1,11 @@
+# Misc
+clean
+.vscode/
+*.sph
+press.*
+md
+
+
 # Prerequisites
 *.d
 
