@@ -2,7 +2,7 @@
 
 This is an event-driven molecular dynamics (EDMD) code for hard spheres. It uses neighbor lists [1] and an efficient event calendar [2] for efficiency.
 
-See LINK for a complete description and benchmarking.
+See http://arxiv.org/abs/2201.01100 for a complete description and benchmarking.
 
 ## Code variants
 
