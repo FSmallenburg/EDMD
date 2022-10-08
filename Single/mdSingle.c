@@ -1155,6 +1155,7 @@ void thermostat(particle* thermostatevent)
         p->vx = random_gaussian() * imsq;			//Kick it
         p->vy = random_gaussian() * imsq;
         p->vz = random_gaussian() * imsq;
+        p->counter ++;
         removeevent(p);
         findcollisions(p);
     }
