@@ -752,7 +752,7 @@ void collision(event* ev)
     p2->vy += dv2 * dy;
     p2->vz += dv2 * dz;
 
-    dvtot += b * r;
+    dvtot += dv1*m1 * r;
     colcounter++;
 
     event* del = p1->cellcrossing;                        //Delete all old events for these particles

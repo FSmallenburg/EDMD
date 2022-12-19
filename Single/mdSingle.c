@@ -775,7 +775,7 @@ void collision(particle* p1)
     p2->vy += dv2 * dy;
     p2->vz += dv2 * dz;
 
-    dvtot += b * r;
+    dvtot += dv1*m1 * r;
     colcounter++;
 
     removeevent(p2);
