@@ -878,11 +878,15 @@ void addevent(event* newevent)
     }
     else                    //Put it in one of the event lists
     {
-        int list_id = currentlist + dt / eventlisttime;
-        if (list_id >= numeventlists)
+        int list_id;
+        if (dt >= numeventlists * eventlisttime) list_id = numeventlists;    //This also handles int overflow when calculating list_id
+        else
         {
-            list_id -= numeventlists;
-            if (list_id > currentlist - 1) list_id = numeventlists; //Overflow
+            list_id = currentlist + dt / eventlisttime;
+            if (list_id >= numeventlists)
+            {
+                list_id -= numeventlists;
+            }
         }
 
         newevent->queue = list_id;

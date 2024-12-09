@@ -19,14 +19,14 @@
 #endif
 
 
-double maxtime = 10;           //Simulation stops at this time
+double maxtime = 100;           //Simulation stops at this time
 int makesnapshots = 0;          //Whether to make snapshots during the run (yes = 1, no = 0)
 double writeinterval = 1;     //Time between output to screen / data file
 double snapshotinterval = 1;  //Time between snapshots (should be a multiple of writeinterval)
 
 int initialconfig = 0;    //= 0 load from file, 1 = FCC crystal
 char inputfilename[100] = "init.sph"; //File to read as input snapshot (for initialconfig = 0)
-double packfrac = 0.49;                     //Packing fraction (for initialconfig = 1)
+double packfrac = 0.25;                     //Packing fraction (for initialconfig = 1)
 int N = 4000;             //Number of particles (for FCC)
 
 //Variables related to the event queueing system. These can affect efficiency.
@@ -561,7 +561,6 @@ void makeneighborlist(particle* p1)
                 {
                     if (p2 != p1)
                     {
-                        update(p2);
                         dx = p1->xn - p2->xn;
                         dy = p1->yn - p2->yn;
                         dz = p1->zn - p2->zn;
@@ -885,11 +884,15 @@ void addevent(particle* newevent)
     }
     else                    //Put it in one of the event lists
     {
-        int list_id = currentlist + dt / eventlisttime;
-        if (list_id >= numeventlists)
+        int list_id;
+        if (dt >= numeventlists * eventlisttime) list_id = numeventlists;    //This also handles int overflow when calculating list_id
+        else
         {
-            list_id -= numeventlists;
-            if (list_id > currentlist - 1) list_id = numeventlists; //Overflow
+            list_id = currentlist + dt / eventlisttime;
+            if (list_id >= numeventlists)
+            {
+                list_id -= numeventlists;
+            }
         }
 
         newevent->queue = list_id;

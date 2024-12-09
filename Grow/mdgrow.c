@@ -24,11 +24,11 @@
 //The code is set up for binary mixtures. The parameters below control the number of particles, size ratio, composition, target packing fraction, etc.
 
 //Number of particles:
-#define N 1000
+#define N 100000
 
 
-double targetpackfrac = 0.58; //Target packing fraction (if too high, simulation will not finish or crash)  
-double composition = 0.3;     //Fraction of large particles
+double targetpackfrac = 0.5; //Target packing fraction (if too high, simulation will not finish or crash)  
+double composition = 1.0;     //Fraction of large particles
 double sizeratio = 0.85;      //small diameter / large diameter (must be <= 1)
 double growthspeed = 0.1;     //Factor determining growth speed (slower growth means higher packing fractions can be reached)
 double thermostatinterval = 0.001;  //Time between applications of thermostat, which gets rid of excess heat generated while growing
@@ -550,7 +550,12 @@ void makeneighborlist(particle* p1, int firsttime)
                         {
                             p1->neighbors[p1->nneigh++] = p2;
                             p2->neighbors[p2->nneigh++] = p1;
-                        }
+                            if (p1->nneigh >= MAXNEIGH || p2->nneigh >= MAXNEIGH)
+                            {
+                                printf ("Too many neighbors; increase MAXNEIGH\n");
+                                exit(3);
+                            }
+			}
                     }
                     p2 = p2->next;
                 }
@@ -874,11 +879,15 @@ void addevent(event* newevent)
     }
     else
     {
-        int list_id = currentlist + dt / eventlisttime;
-        if (list_id >= numeventlists)
+        int list_id;
+        if (dt >= numeventlists * eventlisttime) list_id = numeventlists;    //This also handles int overflow when calculating list_id
+        else
         {
-            list_id -= numeventlists;
-            if (list_id > currentlist - 1) list_id = numeventlists; //Overflow
+            list_id = currentlist + dt / eventlisttime;
+            if (list_id >= numeventlists)
+            {
+                list_id -= numeventlists;
+            }
         }
 
         newevent->queue = list_id;
