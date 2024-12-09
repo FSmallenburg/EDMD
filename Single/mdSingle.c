@@ -574,13 +574,13 @@ void makeneighborlist(particle* p1)
                         rm = (p1->radius + p2->radius) * shellsize;
                         if (r2 < rm * rm)
                         {
+                            p1->neighbors[p1->nneigh++] = p2;
+                            p2->neighbors[p2->nneigh++] = p1;
                             if (p1->nneigh >= MAXNEIGH || p2->nneigh >= MAXNEIGH)
                             {
                                 printf("Too many neighbors. Increase MAXNEIGH.\n");
                                 exit(3);
                             }
-                            p1->neighbors[p1->nneigh++] = p2;
-                            p2->neighbors[p2->nneigh++] = p1;
                         }
                     }
                     p2 = p2->next;
