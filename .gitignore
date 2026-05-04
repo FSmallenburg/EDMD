@@ -1,6 +1,7 @@
 # Misc
 clean
 .vscode/
+Test/
 *.sph
 press.*
 md
