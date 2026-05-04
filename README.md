@@ -5,10 +5,10 @@ This is an event-driven molecular dynamics (EDMD) code for hard spheres. It uses
 See http://arxiv.org/abs/2201.01100 for a complete description and benchmarking.
 
 If you use this code, please cite:  
-![Efficient event-driven simulations of hard spheres](https://doi.org/10.1140/epje/s10189-022-00180-8)  
+[Efficient event-driven simulations of hard spheres](https://doi.org/10.1140/epje/s10189-022-00180-8)  
 F. Smallenburg, European Physical Journal E **45**, 22 (2022). 
 
-Configuration files created by these codes (.sph format) can be visualized with ![Colloid Visualization Tool](https://github.com/FSmallenburg/CVT).
+Configuration files created by these codes (.sph format) can be visualized with [Colloid Visualization Tool](https://github.com/FSmallenburg/CVT).
 
 
 ## Code variants
