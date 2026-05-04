@@ -4,8 +4,8 @@ This is an event-driven molecular dynamics (EDMD) code for hard spheres. It uses
 
 See http://arxiv.org/abs/2201.01100 for a complete description and benchmarking.
 
-If you use this code, please cite:
-![Efficient event-driven simulations of hard spheres](https://doi.org/10.1140/epje/s10189-022-00180-8)
+If you use this code, please cite:  
+![Efficient event-driven simulations of hard spheres](https://doi.org/10.1140/epje/s10189-022-00180-8)  
 F. Smallenburg, European Physical Journal E **45**, 22 (2022). 
 
 Configuration files created by these codes (.sph format) can be visualized with ![Colloid Visualization Tool](https://github.com/FSmallenburg/CVT).
@@ -17,7 +17,7 @@ Four simulation codes are included, in their respective subfolders. Three of the
 * **Cell** contains a simulation code where collision checks are based on a cell list.
 * **Multi** contains a simulation code where collision checks are based on a neighbor list, and is more typically more efficient than the **Cell** code at sufficiently high densities.
 * **Single** contains a simulation code where collision checks are based on a neighbor list, and only a single event is scheduled per particle. This is typically more efficient than the **Multi** code.
-Additionally, a separate simulation code **Grow** is included in which the particles grow over time until a desired packing fraction is reached. This can be helpful for creating initial configurations.
+* Additionally, a separate simulation code **Grow** is included in which the particles grow over time until a desired packing fraction is reached. This can be helpful for creating initial configurations.
 
 ## Compilation details
 
